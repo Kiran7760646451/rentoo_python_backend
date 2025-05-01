@@ -1,0 +1,42 @@
+-- Create the database if it doesn't exist
+CREATE DATABASE IF NOT EXISTS rentoo;
+
+-- Use the rentoo database
+USE rentoo;
+
+-- Create owner table
+CREATE TABLE IF NOT EXISTS owner (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    phone VARCHAR(20),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Create tenant table
+CREATE TABLE IF NOT EXISTS tenant (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    phone VARCHAR(20),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Create property table
+CREATE TABLE IF NOT EXISTS property (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    owner_id BIGINT NOT NULL,
+    current_tenant_id BIGINT,
+    address VARCHAR(255) NOT NULL,
+    city VARCHAR(100) NOT NULL,
+    state VARCHAR(100) NOT NULL,
+    zip_code VARCHAR(20) NOT NULL,
+    monthly_rent DECIMAL(10,2) NOT NULL,
+    status ENUM('VACANT', 'OCCUPIED') DEFAULT 'VACANT',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (owner_id) REFERENCES owner(id) ON DELETE CASCADE,
+    FOREIGN KEY (current_tenant_id) REFERENCES tenant(id) ON DELETE SET NULL
+); 
